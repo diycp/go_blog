@@ -1,4 +1,4 @@
-package initial
+package utils
 import (
 	"github.com/astaxie/beego/cache"
 	"github.com/astaxie/beego"
