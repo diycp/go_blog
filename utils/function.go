@@ -53,7 +53,7 @@ func TagSplit(keywords string){
 	return content
 }
 
-func WriteFile(path, content string) error {
+func WriteFile(path, str string) error {
 	data := []byte(str)
 	return ioutil.WriteFile(path, data, 0644)
 }
