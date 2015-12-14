@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/duguying/blog/models"
 	"strconv"
+	"github.com/go-errors/errors"
 )
 
 type Article struct{
@@ -109,4 +110,48 @@ func UpdateCount(id int)error{
 	err := o.Read(&art)
 	o.QueryTable("article").Filter("id", id).Update(orm.Params{"count": art.Count+1})
 	return err
+}
+func UpdateArticle(id int64, uri string, newArt Article)error{
+	if id == 0 && uri == "" {
+		return errors.New("参数错误")
+	}
+	o := orm.NewOrm()
+	o.Using("default")
+	var art Article
+	if id != 0{
+		art = Article{Id: id}
+	}else{
+		art = Article{Uri: uri}
+	}
+	art.Title = newArt.Title
+	art.Keywords = newArt.Keywords
+	art.Abstract = newArt.Abstract
+	art.Content = newArt.Content
+
+	getArt, _ := GetArticleById(int(id))
+	utils.DelCache("GetArticleByUri.uri."+getArt.Uri)
+	utils.DelCache("GetArticleByTitle.title."+getArt.Uri)
+	utils.DelCache("GetArticleById.id."+getArt.Id)
+
+	_, err := o.Update(&art, "title", "keywords", "abstract", "content")
+	return err
+}
+func DeleteArticle(id int64, uri string)(int64, error){
+	if id == 0 && uri == "" {
+		return errors.New("参数错误")
+	}
+	o := orm.NewOrm()
+	o.Using("default")
+	var art Article
+	if id != 0{
+		art.Id = int(id)
+	}else{
+		art.Uri = uri
+	}
+	getArt, _ := GetArticleById(int(id))
+	utils.DelCache("GetArticleByUri.uri."+getArt.Uri)
+	utils.DelCache("GetArticleByTitle.title."+getArt.Uri)
+	utils.DelCache("GetArticleById.id."+getArt.Id)
+
+	return o.Delete(&art)
 }
