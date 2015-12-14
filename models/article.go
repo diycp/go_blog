@@ -155,3 +155,22 @@ func DeleteArticle(id int64, uri string)(int64, error){
 
 	return o.Delete(&art)
 }
+func CountByMonth()([]orm.Params, error){
+	var maps []orm.Params
+	err := utils.GetCache("CountByMonth", &maps)
+	if err != nil {
+		sql := `SELECT DATE_FORMAT(time, '%Y-%m') as date, count(*) as number, YEAR(time) as year, MONTH(time) as month
+		FROM article GROUP BY date ORDER BY year DESC, month DESC`
+		o := orm.NewOrm()
+		o.Using("default")
+		num, err := o.Raw(sql).Values(&maps)
+		if err == nil && num > 0{
+			utils.SetCache("CountByMonth", maps, 3600)
+			return maps, nil
+		}else{
+			return nil, err
+		}
+	}else{
+		return maps, nil
+	}
+}
