@@ -102,3 +102,11 @@ func GetArticleViewCount(id int)(int, error){
 		return 0, err
 	}
 }
+func UpdateCount(id int)error{
+	o := orm.NewOrm()
+	o.Using("default")
+	art := Article{Id:id}
+	err := o.Read(&art)
+	o.QueryTable("article").Filter("id", id).Update(orm.Params{"count": art.Count+1})
+	return err
+}
