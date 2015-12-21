@@ -11,7 +11,7 @@ type BaseController struct {
 func (this *BaseController)Forbidden(mark, condition string){
 	mark = strings.ToLower(mark)
 	condition = strings.ToLower(condition)
-	if makr == "not" && this.Data["userIs"] != condition {
+	if mark == "not" && this.Data["userIs"] != condition {
 		this.Redirect("/", 302)
 	}else if this.Data["userIs"] == condition {
 		this.Redirect("/", 302)

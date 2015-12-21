@@ -35,6 +35,13 @@ func AddUser(username, password string)(int64, error){
 	user.Password = com.Md5(password + user.Salt)
 	return o.Insert(user)
 }
+func FindUser(username string)(Users, error){
+	o := orm.NewOrm()
+	o.Using("default")
+	user := Users{Username:username}
+	err := o.Read(&user, "username")
+	return user, err
+}
 func ChangeUsername(oldUsername, newUsername string)error{
 	o := orm.NewOrm()
 	o.Using("default")
