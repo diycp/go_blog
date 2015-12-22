@@ -41,7 +41,7 @@ func ReadFileByte(path string)([]byte, error){
 	return ioutil.ReadAll(fi)
 }
 
-func TagSplit(keywords string){
+func TagSplit(keywords string)string{
 	if "" == keywords {
 		return ""
 	}

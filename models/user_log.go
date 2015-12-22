@@ -16,7 +16,7 @@ type UserLog struct {
 func init(){
 	orm.RegisterModel(new(UserLog))
 }
-func (this *UserLog)TableName(){
+func (this *UserLog)TableName()string{
 	return "user_log"
 }
 func (this *UserLog)AddUserLog(user int64, ip, ua, location string, action int)(int64, error){

@@ -5,7 +5,6 @@ import (
 	"strings"
 	"github.com/duguying/blog/utils"
 	"fmt"
-	"github.com/duguying/blog/models"
 	"strconv"
 	"github.com/go-errors/errors"
 )
@@ -77,7 +76,7 @@ func GetArticleByTitle(title string)(Article, error){
 	if err != nil{
 		count, err := GetArticleViewCount(art.Id)
 		if err == nil {
-			art.Content = int(count)
+			art.Count = count
 		}
 		return art, nil
 	}else{
@@ -87,6 +86,7 @@ func GetArticleByTitle(title string)(Article, error){
 		err = o.Read(&art, "title")
 		utils.SetCache("GetArticleByTitle.title"+title, art, 600)
 	}
+	return art, err
 }
 
 //获取浏览量
@@ -111,7 +111,7 @@ func UpdateCount(id int)error{
 	o.QueryTable("article").Filter("id", id).Update(orm.Params{"count": art.Count+1})
 	return err
 }
-func UpdateArticle(id int64, uri string, newArt Article)error{
+func UpdateArticle(id int, uri string, newArt Article)error{
 	if id == 0 && uri == "" {
 		return errors.New("参数错误")
 	}
@@ -131,14 +131,14 @@ func UpdateArticle(id int64, uri string, newArt Article)error{
 	getArt, _ := GetArticleById(int(id))
 	utils.DelCache("GetArticleByUri.uri."+getArt.Uri)
 	utils.DelCache("GetArticleByTitle.title."+getArt.Uri)
-	utils.DelCache("GetArticleById.id."+getArt.Id)
+	utils.DelCache("GetArticleById.id." + strconv.Itoa(getArt.Id))
 
 	_, err := o.Update(&art, "title", "keywords", "abstract", "content")
 	return err
 }
 func DeleteArticle(id int64, uri string)(int64, error){
 	if id == 0 && uri == "" {
-		return errors.New("参数错误")
+		return 0, errors.New("参数错误")
 	}
 	o := orm.NewOrm()
 	o.Using("default")
@@ -151,7 +151,7 @@ func DeleteArticle(id int64, uri string)(int64, error){
 	getArt, _ := GetArticleById(int(id))
 	utils.DelCache("GetArticleByUri.uri."+getArt.Uri)
 	utils.DelCache("GetArticleByTitle.title."+getArt.Uri)
-	utils.DelCache("GetArticleById.id."+getArt.Id)
+	utils.DelCache("GetArticleById.id." + strconv.Itoa(getArt.Id))
 
 	return o.Delete(&art)
 }

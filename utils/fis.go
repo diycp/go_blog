@@ -29,7 +29,7 @@ func Fis(key string) template.HTML {
 	content := loadMap()
 	json, ok := com.JsonDecode(content)
 	if ok != nil {
-		Exit(1, ok)
+		Exit(1, "json failed")
 	}
 	json = json.(map[string]interface{})["res"]
 	if fileMap, ok := json.(map[string]interface{}); !ok {

@@ -3,14 +3,15 @@ import (
 	"github.com/go-errors/errors"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 func New(code, msg string) error{
 	err := `[` + code + `]` + msg
 	return errors.New(err)
 }
-func Exit(code, msg string){
-	err := New(code, msg)
+func Exit(code int, msg string){
+	err := New(strconv.Itoa(code), msg)
 	fmt.Println(err)
 	os.Exit(1)
 }

@@ -37,7 +37,7 @@ func (this *RegisterController)Post(){
 		return
 	}
 	id, err := models.AddUser(username, password)
-	if err == nil && id{
+	if err == nil && id > 0{
 		this.Data["json"] = map[string]interface{}{"result":true, "msg":"register success", "refer":"/"}
 	}else{
 		this.Data["json"] = map[string]interface{}{"result": false, "msg":"register failed", "refer":"/"}
@@ -65,17 +65,30 @@ func (this *LoginController)Post(){
 		this.ServeJson()
 		return
 	}
-	user, err := models.FindUser(username)
+	user, err := models.FindUser(username.(string))
 	if err != nil {
 		this.Data["json"] = map[string]interface{}{"result": false, "msg":"user no exist", "refer":"/"}
 	}else{
-		password = com.Md5(password + user.Salt)
+		password = com.Md5(password.(string) + user.Salt)
 		if password == user.Password {
 			this.SetSession("username", username)
-			this.Data["json"] = map[string]interface{}{"result": true, "msg", "login success", "refer":"/admin"}
+			this.Data["json"] = map[string]interface{}{"result": true, "msg": "user login success ", "refer": "/admin"}
 		}else{
 			this.Data["json"] = map[string]interface{}{"result":false, "msg":"login failed", "refer":"/"}
 		}
 	}
+	this.ServeJson()
+}
+
+//退出登陆
+type LogoutController struct {
+	controllers.BaseController
+}
+func(this *LogoutController)Get(username string){
+	this.DelSession(username)
+	this.Ctx.WriteString("logout success")
+}
+func (this *LogoutController)Post(){
+	this.Data["json"] = map[string]interface{}{"result": false, "msg": "invalid request ", "refer": "/"}
 	this.ServeJson()
 }

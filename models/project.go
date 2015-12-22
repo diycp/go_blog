@@ -49,7 +49,7 @@ func AddProject(name, icon, author, desc string, createTime time.Time)(int64, er
 	pro.Time = createTime
 	return o.Insert(pro)
 }
-func DeleteProject(id int64)error{
+func DeleteProject(id int)error{
 	o := orm.NewOrm()
 	o.Using("default")
 	_, err := o.Delete(&Project{Id:id})
@@ -59,11 +59,11 @@ func UpdateProject(id int, name, icon, author, desc string, createTime time.Time
 	o := orm.NewOrm()
 	o.Using("default")
 	if id <= 0 {
-		return errors.New("参数错误")
+		return int64(0), errors.New("参数错误")
 	}
 	pro, err := GetProject(id, "")
 	if err != nil {
-		return err
+		return int64(0), err
 	}
 	log.Pinkln(pro)
 
@@ -72,10 +72,10 @@ func UpdateProject(id int, name, icon, author, desc string, createTime time.Time
 	pro.Description = desc
 	pro.Author = author
 	_, err = o.Update(&pro, "name", "icon_url", "description")
-	return err
+	return int64(0), err
 }
 
-func ListProject(page, pageNum int)(orm.Params, bool, int, error){
+func ListProject(page, pageNum int)([]orm.Params, bool, int, error){
 	o := orm.NewOrm()
 	o.Using("default")
 	sql1 := "select * from project order by time desc limit ?, "+fmt.Sprintf("%s", pageNum)

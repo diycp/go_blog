@@ -15,7 +15,7 @@ type File struct{
 	Store string
 	Mime string
 }
-func (this *File)TableName(){
+func (this *File)TableName()string{
 	return "file"
 }
 func init(){
@@ -56,7 +56,7 @@ func Remove(id int)error{
 	return err
 }
 
-func GetFileList(page, pageNum int)([]orm.Params, bool, int, err){
+func GetFileList(page, pageNum int)([]orm.Params, bool, int, error){
 	sql1 := "select * from file order by time desc limit ?, " + fmt.Sprintf("%d", pageNum)
 	sql2 := "select count(*) as number from file"
 	var maps, maps2 []orm.Params
