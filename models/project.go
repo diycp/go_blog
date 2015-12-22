@@ -23,7 +23,7 @@ func (this *Project)TableName()string{
 }
 func GetProject(id int, name string)(Project, error){
 	o := orm.NewOrm()
-	o.Using("default")
+
 	pro := Project{}
 	var err error
 	if id > 0 {
@@ -40,7 +40,7 @@ func GetProject(id int, name string)(Project, error){
 
 func AddProject(name, icon, author, desc string, createTime time.Time)(int64, error){
 	o := orm.NewOrm()
-	o.Using("default")
+
 	pro := new(Project)
 	pro.Name = name
 	pro.IconUrl = icon
@@ -51,13 +51,13 @@ func AddProject(name, icon, author, desc string, createTime time.Time)(int64, er
 }
 func DeleteProject(id int)error{
 	o := orm.NewOrm()
-	o.Using("default")
+
 	_, err := o.Delete(&Project{Id:id})
 	return err
 }
 func UpdateProject(id int, name, icon, author, desc string, createTime time.Time)(int64, error){
 	o := orm.NewOrm()
-	o.Using("default")
+
 	if id <= 0 {
 		return int64(0), errors.New("参数错误")
 	}
@@ -77,7 +77,7 @@ func UpdateProject(id int, name, icon, author, desc string, createTime time.Time
 
 func ListProject(page, pageNum int)([]orm.Params, bool, int, error){
 	o := orm.NewOrm()
-	o.Using("default")
+
 	sql1 := "select * from project order by time desc limit ?, "+fmt.Sprintf("%s", pageNum)
 	sql2 := "select count(*) as number from project"
 	var maps []orm.Params

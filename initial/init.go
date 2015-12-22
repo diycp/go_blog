@@ -1,9 +1,9 @@
 package initial
 
-func Init(){
+func init(){
 	InitEnv()
 	InitSql()
-	InitCache()
+//	InitCache()
 	InitTplFunc()
-	InitCron()
+//	InitCron()
 }

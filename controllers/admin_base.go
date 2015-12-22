@@ -1,11 +1,11 @@
 package controllers
 import (
 	"github.com/astaxie/beego"
-	"github.com/duguying/blog/models"
 	"github.com/gogather/com/log"
 	"strings"
 	"github.com/gogather/com"
 	"blog/utils"
+	"blog/models"
 )
 type AdminBaseController struct{
 	beego.Controller
@@ -43,7 +43,7 @@ func (this *AdminBaseController)Propare(){
 				location, _ = utils.GetLocation(ip)
 			}
 			ua := this.Ctx.Request.UserAgent()
-			_, err = userLog.AddUserlog(int64(u.Id), ip, ua, location, 0)
+			_, err = userLog.AddUserLog(int64(u.Id), ip, ua, location, 0)
 			if err != nil {
 				log.Warnln(err)
 			}

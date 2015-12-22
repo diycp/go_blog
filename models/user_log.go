@@ -21,7 +21,7 @@ func (this *UserLog)TableName()string{
 }
 func (this *UserLog)AddUserLog(user int64, ip, ua, location string, action int)(int64, error){
 	o := orm.NewOrm()
-	o.Using("default")
+
 	userLog := new(UserLog)
 	userLog.User = user
 	userLog.Ip = ip
@@ -32,14 +32,12 @@ func (this *UserLog)AddUserLog(user int64, ip, ua, location string, action int)(
 }
 func (this *UserLog)GetUserLogByIp(ip string)(UserLog, error){
 	o := orm.NewOrm()
-	o.Using("default")
+
 	userLog := UserLog{Ip:ip}
 	err := o.Read(&userLog, "ip")
 	return userLog, err
 }
-func (this *UserLog)IsVaildLocation(data map[string]interface{})bool{
-	o := orm.NewOrm()
-	o.Using("default")
+func (this *UserLog)IsValidLocation(data map[string]interface{})bool{
 	cityName := data["city_name"].(string)
 	countryName := data["country_name"].(string)
 	regionName := data["region_name"].(string)

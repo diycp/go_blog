@@ -28,7 +28,7 @@ func init(){
 }
 func AddUser(username, password string)(int64, error){
 	o := orm.NewOrm()
-	o.Using("default")
+
 	user := new(Users)
 	user.Username = username
 	user.Salt = com.RandString(10)
@@ -37,20 +37,20 @@ func AddUser(username, password string)(int64, error){
 }
 func FindUser(username string)(Users, error){
 	o := orm.NewOrm()
-	o.Using("default")
+
 	user := Users{Username:username}
 	err := o.Read(&user, "username")
 	return user, err
 }
 func ChangeUsername(oldUsername, newUsername string)error{
 	o := orm.NewOrm()
-	o.Using("default")
+
 	_, err := o.QueryTable("users").Filter("username", oldUsername).Update(orm.Params{"username": newUsername})
 	return err
 }
 func ChangeEmail(username, email string)error{
 	o := orm.NewOrm()
-	o.Using("default")
+
 	reg := regexp.MustCompile(`^(\w)+(\.\w)*@(\w)+((\.\w+)+)$`)
 	result := reg.MatchString(email)
 	if !result {
@@ -67,14 +67,14 @@ func ChangeEmail(username, email string)error{
 }
 func AddVerify(username, code string, overdue time.Time)error{
 	o := orm.NewOrm()
-	o.Using("default")
+
 	overdueTime := overdue.Add(1 * time.Hour).Format("2006-01-02 15:04:05")
 	_, err := o.Raw("insert into varify (`username`, `code`, `overdue`) VALUE('"+username+"', '"+code+"', '"+overdueTime+"')").Exec()
 	return err
 }
 func CheckVarify(code string)(bool, string, error){
 	o := orm.NewOrm()
-	o.Using("default")
+
 
 	var VarifyItem Varify
 	err := o.Raw("select * from varify where code = '"+code+"' AND overdue > now()").QueryRow()
@@ -87,7 +87,7 @@ func CheckVarify(code string)(bool, string, error){
 }
 func SetPassword(username, password string)error{
 	o := orm.NewOrm()
-	o.Using("default")
+
 	salt := com.RandString(10)
 	num, err := o.QueryTable("users").Filter("username", username).Update(orm.Params{
 		"salt": salt,
@@ -100,7 +100,7 @@ func SetPassword(username, password string)error{
 }
 func ChangePassword(username, oldPassword, newPassword string)error{
 	o := orm.NewOrm()
-	o.Using("default")
+
 	salt := com.RandString(10)
 	user := Users{Username: username}
 	err := o.Read(&user, "username")

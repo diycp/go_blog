@@ -5,7 +5,7 @@ import (
 	"github.com/gogather/com"
 	"strings"
 	"fmt"
-	"github.com/duguying/blog/utils"
+	"blog/utils"
 )
 
 type InstallController struct {

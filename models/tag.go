@@ -18,7 +18,7 @@ func init(){
 
 func NewTag(tagName string)(int64, error){
 	o := orm.NewOrm()
-	o.Using("default")
+
 	tag := new(Tags)
 	tag.Name = tagName
 	return o.Insert(tag)

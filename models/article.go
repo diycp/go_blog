@@ -3,7 +3,7 @@ import (
 	"time"
 	"github.com/astaxie/beego/orm"
 	"strings"
-	"github.com/duguying/blog/utils"
+	"blog/utils"
 	"fmt"
 	"strconv"
 	"github.com/go-errors/errors"
@@ -30,7 +30,7 @@ func init(){
 }
 func AddArticle(title, content, keyword, abstract, author string)(int64, error){
 	o := orm.NewOrm()
-	o.Using("default")
+
 	sql := "insert into article(title, uri, keywords, abstract, content, author)values(?,?,?,?,?,?)"
 	res, err := o.Raw(sql, title, strings.Replace(title, "/", "-", -1), keyword, abstract, content, author).Exec()
 	if err != nil{
@@ -45,7 +45,7 @@ func GetArticleById(id int)(Article, error){
 	err := utils.GetCache("GetArticle.id."+fmt.Sprintf("%d", id), &art)
 	if err != nil {
 		o := orm.NewOrm()
-		o.Using("default")
+
 		art = Article{Id: id}
 		err = o.Read(&art, "id")
 		utils.SetCache("GetArticle.id."+fmt.Sprintf("%d", id), &art, 600)
@@ -63,7 +63,7 @@ func GetArticleByUri(uri string)(Article, error){
 		return art, nil
 	}else{
 		o := orm.NewOrm()
-		o.Using("default")
+
 		art = Article{Uri:uri}
 		err = o.Read(&art, "uri")
 		utils.SetCache("GetArticleByUri.uri."+uri, &art, 600)
@@ -81,7 +81,7 @@ func GetArticleByTitle(title string)(Article, error){
 		return art, nil
 	}else{
 		o := orm.NewOrm()
-		o.Using("default")
+
 		art = Article{Title:title}
 		err = o.Read(&art, "title")
 		utils.SetCache("GetArticleByTitle.title"+title, art, 600)
@@ -105,7 +105,7 @@ func GetArticleViewCount(id int)(int, error){
 }
 func UpdateCount(id int)error{
 	o := orm.NewOrm()
-	o.Using("default")
+
 	art := Article{Id:id}
 	err := o.Read(&art)
 	o.QueryTable("article").Filter("id", id).Update(orm.Params{"count": art.Count+1})
@@ -116,7 +116,7 @@ func UpdateArticle(id int, uri string, newArt Article)error{
 		return errors.New("参数错误")
 	}
 	o := orm.NewOrm()
-	o.Using("default")
+
 	var art Article
 	if id != 0{
 		art = Article{Id: id}
@@ -141,7 +141,7 @@ func DeleteArticle(id int64, uri string)(int64, error){
 		return 0, errors.New("参数错误")
 	}
 	o := orm.NewOrm()
-	o.Using("default")
+
 	var art Article
 	if id != 0{
 		art.Id = int(id)
@@ -162,7 +162,7 @@ func CountByMonth()([]orm.Params, error){
 		sql := `SELECT DATE_FORMAT(time, '%Y-%m') as date, count(*) as number, YEAR(time) as year, MONTH(time) as month
 		FROM article GROUP BY date ORDER BY year DESC, month DESC`
 		o := orm.NewOrm()
-		o.Using("default")
+
 		num, err := o.Raw(sql).Values(&maps)
 		if err == nil && num > 0{
 			utils.SetCache("CountByMonth", maps, 3600)

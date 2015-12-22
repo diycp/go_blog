@@ -23,7 +23,7 @@ func init(){
 }
 func AddFile(filename, path, store, mime string)(int64, error){
 	o := orm.NewOrm()
-	o.Using("default")
+
 	var file File
 	file.Filename = filename
 	file.Path = path
