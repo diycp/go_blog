@@ -6,6 +6,6 @@ import (
 func InitEnv(){
 	runMode := beego.AppConfig.String("RunMode")
 	if runMode == "dev" {
-		beego.SetStaticPath("/static/css", "static/theme/default")
+		beego.SetStaticPath("/static", "static/theme/default")
 	}
 }
