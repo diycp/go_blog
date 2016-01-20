@@ -65,3 +65,7 @@ func Test_Get(t *testing.T){
 	fmt.Println("Test_Get" + ": " + content)
 }
 
+func Test_CopyFile(t *testing.T){
+	size, _ := tools.CopyFile("/tmp/go/Test_WriteFile.txt2", "/tmp/go/Test_WriteFile.txt")
+	fmt.Println("Test_Get" + ": " , size)
+}

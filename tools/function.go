@@ -18,6 +18,7 @@ import (
 	"bytes"
 	"math"
 	"net/http"
+	"strconv"
 )
 
 //创建GUID
@@ -225,4 +226,41 @@ func Strim(str string) string {
 	str = strings.Replace(str, "\n", "", -1)
 	str = strings.Replace(str, "\r", "", -1)
 	str = strings.Replace(str, " ", "", -1)
+	return str
+}
+
+//复制文件
+func CopyFile(dstName, srcName string)(int64, error){
+	src, err := os.Open(srcName)
+	if err != nil {
+		return int64(0), err
+	}
+	defer src.Close()
+	dst, err := os.OpenFile(dstName, os.O_WRONLY|os.O_CREATE, 0644)
+	if err != nil {
+		return int64(0), err
+	}
+	defer dst.Close()
+	return io.Copy(dst, src)
+}
+
+func Unicode(rs string)string{
+	json := ""
+	for _, r := range rs {
+		rint := int(r)
+		if rint < 128 {
+			json += string(r)
+		}else{
+			json += "\\u" + strconv.FormatInt(int64(rint), 16)
+		}
+	}
+	return json
+}
+
+func HTMLEncode(rs string) string {
+	html := ""
+	for _, r := range rs {
+		html += "&#" + strconv.Itoa(int(r)) + ";"
+	}
+	return html
 }
